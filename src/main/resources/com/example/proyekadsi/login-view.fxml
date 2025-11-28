@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proyekadsi.controller.LoginController">
+    <padding>
+        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+    </padding>
+
+    <Label text="Sistem Informasi Klinik">
+        <font><Font name="System Bold" size="24.0" /></font>
+    </Label>
+
+    <Label text="Silakan Login" />
+
+    <ComboBox fx:id="roleBox" promptText="Pilih Role (User/Admin/Dokter)" prefWidth="300.0" />
+
+    <TextField fx:id="inputIdField" promptText="Nomor HP / Username" maxWidth="300.0"/>
+
+    <PasswordField fx:id="passwordField" promptText="Password" maxWidth="300.0"/>
+
+    <TextField fx:id="namaRegisterField" promptText="Nama Lengkap (Khusus Pendaftar Baru)" maxWidth="300.0" visible="false" managed="false"/>
+
+    <Button text="Masuk" onAction="#onLoginClick" prefWidth="300.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+</VBox>

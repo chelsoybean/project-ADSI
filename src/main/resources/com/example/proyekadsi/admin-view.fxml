@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proyekadsi.controller.AdminController">
+
+    <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+
+    <Label text="ADMINISTRATOR DASHBOARD">
+        <font><Font name="System Bold" size="18.0"/></font>
+    </Label>
+
+    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+
+        <Tab text="Manajemen Jadwal">
+            <VBox spacing="15.0">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+                <Label text="Input Jadwal Cuti Dokter" style="-fx-font-weight: bold;"/>
+                <HBox spacing="10.0">
+                    <ComboBox fx:id="comboDokterCuti" promptText="Pilih Dokter" prefWidth="200.0"/>
+                    <DatePicker fx:id="tglMulaiCuti" promptText="Mulai Cuti"/>
+                    <DatePicker fx:id="tglSelesaiCuti" promptText="Selesai Cuti"/>
+                </HBox>
+                <TextField fx:id="txtKeteranganCuti" promptText="Keterangan / Alasan Cuti"/>
+                <Button text="Simpan Data Cuti" onAction="#onSimpanCuti" style="-fx-background-color: #FF9800; -fx-text-fill: white;"/>
+
+                <Label text="--------------------------------------------------"/>
+
+                <Label text="Generate Jadwal Praktek (2 Minggu)" style="-fx-font-weight: bold;"/>
+                <Label text="Klik tombol ini setiap akhir minggu untuk membuka jadwal baru. Sistem otomatis melewati tanggal cuti." wrapText="true"/>
+                <Button text="GENERATE JADWAL SEKARANG" onAction="#onGenerateJadwal" prefHeight="40.0" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
+            </VBox>
+        </Tab>
+
+        <Tab text="Pelayanan Pasien (Hari Ini)">
+            <VBox spacing="10.0">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+                <HBox spacing="10.0" alignment="CENTER_LEFT">
+                    <Label text="Antrian Pasien Hari Ini" style="-fx-font-weight: bold;"/>
+                    <Button text="Refresh Tabel" onAction="#onRefreshTabel"/>
+                </HBox>
+
+                <TableView fx:id="tableAntrian" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colAntrian" text="No. Antrian" prefWidth="80.0"/>
+                        <TableColumn fx:id="colPasien" text="ID Pasien" prefWidth="100.0"/>
+                        <TableColumn fx:id="colStatus" text="Status" prefWidth="100.0"/>
+                        <TableColumn fx:id="colId" text="ID Janji" prefWidth="80.0"/>
+                    </columns>
+                </TableView>
+
+                <HBox spacing="15.0" style="-fx-background-color: #eee; -fx-padding: 10;">
+                    <VBox spacing="5.0">
+                        <Label text="Langkah 1: Pasien Datang"/>
+                        <Button text="Konfirmasi Kehadiran" onAction="#onKonfirmasiHadir" prefWidth="150.0"/>
+                    </VBox>
+
+                    <VBox spacing="5.0">
+                        <Label text="Langkah 2: Pembayaran"/>
+                        <HBox spacing="5.0">
+                            <TextField fx:id="inputBayar" promptText="Nominal (Rp)" prefWidth="120.0"/>
+                            <Button text="Proses Bayar" onAction="#onProsesBayar" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                        </HBox>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </Tab>
+
+    </TabPane>
+</VBox>

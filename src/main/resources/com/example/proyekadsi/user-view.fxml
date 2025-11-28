@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="15.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.proyekadsi.controller.UserController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <Label text="Pendaftaran Klinik Online">
+        <font><Font name="System Bold" size="22.0" /></font>
+    </Label>
+
+    <VBox style="-fx-background-color: #e3f2fd; -fx-padding: 10; -fx-background-radius: 5;">
+        <Label text="1. Cari Dokter &amp; Jadwal" style="-fx-font-weight: bold;"/>
+        <HBox spacing="10.0">
+            <ComboBox fx:id="comboDokter" onAction="#onDokterSelected" prefWidth="250.0" promptText="Pilih Dokter Spesialis..." />
+        </HBox>
+        <Label text="Pilih Jadwal (Klik list di bawah):" />
+        <ListView fx:id="listJadwal" prefHeight="100.0" />
+    </VBox>
+
+    <VBox style="-fx-background-color: #fff3e0; -fx-padding: 10; -fx-background-radius: 5;">
+        <Label text="2. Siapa yang berobat?" style="-fx-font-weight: bold;"/>
+
+        <HBox spacing="10.0" alignment="CENTER_LEFT">
+            <ComboBox fx:id="comboPasien" prefWidth="250.0" promptText="Pilih Pasien Terdaftar..." />
+            <Button text="+ Pasien Baru" onAction="#onShowTambahPasien" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        </HBox>
+
+        <VBox fx:id="boxTambahPasien" spacing="8.0" style="-fx-border-color: #FF9800; -fx-border-width: 1; -fx-padding: 10; -fx-margin: 10 0 0 0;">
+            <Label text="Form Pasien Baru (Sesuai KTP/KK)" style="-fx-font-weight: bold; -fx-text-fill: #E65100;"/>
+            <TextField fx:id="inputNama" promptText="Nama Lengkap Pasien" />
+            <TextField fx:id="inputNIK" promptText="NIK Pasien" />
+            <DatePicker fx:id="inputTglLahir" promptText="Tanggal Lahir" />
+            <Button text="Simpan Data Pasien" onAction="#onSimpanPasien" maxWidth="Infinity"/>
+        </VBox>
+    </VBox>
+
+    <Separator />
+
+    <Button text="BUAT JANJI TEMU" onAction="#onBuatJanji" maxWidth="Infinity" prefHeight="40.0" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+
+    <Label fx:id="lblStatus" text="Status: Menunggu..." textFill="#666666">
+        <font><Font size="14.0"/></font>
+    </Label>
+
+</VBox>
