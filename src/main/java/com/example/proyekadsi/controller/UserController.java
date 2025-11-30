@@ -65,6 +65,8 @@ public class UserController {
     public void onShowTambahPasien() {
         boxTambahPasien.setVisible(true);
         boxTambahPasien.setManaged(true);
+        System.out.println("Show Form Dipanggil");
+
         inputNama.requestFocus();
     }
 
@@ -93,7 +95,9 @@ public class UserController {
             boxTambahPasien.setVisible(false);
             boxTambahPasien.setManaged(false);
             inputNama.clear(); inputNIK.clear();
-        }
+        } else {
+        new Alert(Alert.AlertType.ERROR, "Gagal menyimpan data pasien! Periksa console.").show();
+    }
     }
 
     // Tombol "BUAT JANJI"

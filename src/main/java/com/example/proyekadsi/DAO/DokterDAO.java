@@ -16,7 +16,7 @@ public class DokterDAO {
                 list.add(new Dokter(
                         rs.getString("id_dokter"),
                         rs.getString("nama"),
-                        rs.getString("spesialis")
+                        rs.getString("spesialisasi")
                 ));
             }
         } catch (Exception e) { e.printStackTrace(); }

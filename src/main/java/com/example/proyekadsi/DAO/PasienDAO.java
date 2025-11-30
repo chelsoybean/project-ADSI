@@ -31,11 +31,24 @@ public class PasienDAO {
         String sql = "INSERT INTO pasien (id_akun_pengguna, nama, nik, tgl_lahir) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            System.out.println("DEBUG: Query tambah pasien dijalankan");
+
             ps.setInt(1, Integer.parseInt(idAkun));
             ps.setString(2, nama);
             ps.setString(3, nik);
             ps.setDate(4, tglLahir);
-            return ps.executeUpdate() > 0;
-        } catch (Exception e) { return false; }
+
+            int affected = ps.executeUpdate();
+            System.out.println("DEBUG: Rows inserted = " + affected);
+
+            return affected > 0;
+
+        } catch (Exception e) {
+            System.out.println("ERROR tambahPasien:");
+            e.printStackTrace();
+            return false;
+        }
     }
+
 }
