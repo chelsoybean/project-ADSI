@@ -19,6 +19,9 @@ public class DokterDAO {
                         rs.getString("spesialisasi")
                 ));
             }
+            System.out.println("LOAD DOKTER: " +
+                    rs.getString("nama") + " | " + rs.getString("spesialisasi"));
+
         } catch (Exception e) { e.printStackTrace(); }
         return list;
     }

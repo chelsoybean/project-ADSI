@@ -22,7 +22,8 @@ public class JanjiTemuDAO {
             if (rs.next()) noAntrian = rs.getInt(1);
 
             // 2. Insert Janji Temu
-            String sqlInsert = "INSERT INTO janji_temu (id_pasien, id_jadwal, id_dokter, tanggal, no_antrian, status) VALUES (?,?,?,?,?, 'PENDING')";
+            String sqlInsert = "INSERT INTO janji_temu (id_pasien, id_jadwal, id_dokter, tanggal, no_antrian, status)  VALUES (?,?,?,?,?, 'PENDING')";
+
             PreparedStatement ps = conn.prepareStatement(sqlInsert);
             ps.setInt(1, Integer.parseInt(idPasien));
             ps.setInt(2, Integer.parseInt(idJadwal));

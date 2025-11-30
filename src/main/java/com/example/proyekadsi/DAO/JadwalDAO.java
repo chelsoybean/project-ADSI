@@ -10,7 +10,9 @@ import java.util.List;
 public class JadwalDAO {
     public List<JadwalPraktek> getJadwalByDokter(String idDokter) {
         List<JadwalPraktek> list = new ArrayList<>();
-        String sql = "SELECT * FROM jadwal_praktek WHERE id_dokter = ? AND tanggal >= CURDATE() AND kuota > 0 ORDER BY tanggal ASC";
+        String sql = "SELECT * FROM jadwal_praktek " +
+                "WHERE id_dokter = ? AND tanggal >= CURRENT_DATE AND kuota > 0 " +
+                "ORDER BY tanggal ASC";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, Integer.parseInt(idDokter));
