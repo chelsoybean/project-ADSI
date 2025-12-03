@@ -100,31 +100,27 @@ public class UserController {
     }
     }
 
-    // Tombol "BUAT JANJI"
     @FXML
     public void onBuatJanji() {
         Pasien p = comboPasien.getValue();
         JadwalPraktek j = listJadwal.getSelectionModel().getSelectedItem();
         Dokter d = comboDokter.getValue();
 
-        // Validasi
-        if (p == null) {
-            new Alert(Alert.AlertType.WARNING, "Pilih Pasien yang akan berobat!").show();
-            return;
-        }
-        if (j == null) {
-            new Alert(Alert.AlertType.WARNING, "Pilih Jadwal Dokter!").show();
+        if (p == null || j == null) {
+            new Alert(Alert.AlertType.WARNING, "Lengkapi data dulu!").show();
             return;
         }
 
-        // Eksekusi Booking
-        int antrian = janjiDAO.buatJanji(p.getIdPasien(), j.getIdJadwal(), d.getIdDokter(), j.getTanggal());
+        // Panggil DAO yang baru (Return String)
+        String hasil = janjiDAO.buatJanji(p.getIdPasien(), j.getIdJadwal(), d.getIdDokter(), j.getTanggal());
 
-        if (antrian > 0) {
-            lblStatus.setText("BERHASIL! No Antrian: " + antrian);
-            new Alert(Alert.AlertType.INFORMATION, "Sukses! Nomor Antrian Anda: " + antrian).show();
+        if (hasil.startsWith("OK:")) {
+            String noAntrian = hasil.split(":")[1];
+            lblStatus.setText("BERHASIL! No Antrian: " + noAntrian);
+            new Alert(Alert.AlertType.INFORMATION, "Sukses! No Antrian: " + noAntrian).show();
         } else {
-            lblStatus.setText("Gagal. Slot penuh atau error.");
+            // TAMPILKAN ERROR ASLI DARI DATABASE
+            new Alert(Alert.AlertType.ERROR, hasil).show();
         }
     }
 }

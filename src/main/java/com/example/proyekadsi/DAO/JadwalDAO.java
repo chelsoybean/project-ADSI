@@ -3,11 +3,27 @@ package com.example.proyekadsi.DAO;
 import com.example.proyekadsi.model.JadwalPraktek;
 import com.example.proyekadsi.util.DBConnect;
 import java.sql.*;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JadwalDAO {
+
+    // Helper: Mengubah DayOfWeek Inggris ke Indonesia
+    private String getNamaHariIndo(DayOfWeek dow) {
+        switch (dow) {
+            case MONDAY: return "Senin";
+            case TUESDAY: return "Selasa";
+            case WEDNESDAY: return "Rabu";
+            case THURSDAY: return "Kamis";
+            case FRIDAY: return "Jumat";
+            case SATURDAY: return "Sabtu";
+            case SUNDAY: return "Minggu";
+            default: return "";
+        }
+    }
+
     public List<JadwalPraktek> getJadwalByDokter(String idDokter) {
         List<JadwalPraktek> list = new ArrayList<>();
         String sql = "SELECT * FROM jadwal_praktek " +
@@ -31,34 +47,73 @@ public class JadwalDAO {
         return list;
     }
 
+    // LOGIC UTAMA: GENERATE JADWAL 2 MINGGU YANG VALID
     public void generateJadwal() {
         Connection conn = null;
         try {
             conn = DBConnect.getConnection();
-            conn.setAutoCommit(false);
+            conn.setAutoCommit(false); // Mulai Transaksi
 
+            // 1. Ambil Template Jadwal Tetap
             String sqlMaster = "SELECT id_dokter, hari, jam_mulai, jam_selesai FROM jadwal_tetap";
-            ResultSet rs = conn.createStatement().executeQuery(sqlMaster);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sqlMaster);
 
-            LocalDate today = LocalDate.now();
+            // Simpan template ke memory sementara biar resultset tidak konflik dengan insert
+            // (Opsional, tapi lebih aman langsung di loop jika driver mendukung)
+
             String insertSql = "INSERT INTO jadwal_praktek (id_dokter, hari, jam_mulai, jam_selesai, tanggal, kuota) VALUES (?,?,?,?,?,20)";
             PreparedStatement ps = conn.prepareStatement(insertSql);
 
+            LocalDate today = LocalDate.now();
+
             while (rs.next()) {
+                int idDokter = rs.getInt("id_dokter");
+                String hariTemplate = rs.getString("hari"); // Misal: "Senin"
+                Time jamMulai = rs.getTime("jam_mulai");
+                Time jamSelesai = rs.getTime("jam_selesai");
+
+                // Loop 14 hari ke depan
                 for (int i = 0; i < 14; i++) {
-                    LocalDate target = today.plusDays(i);
-                    // (Logic cek hari & cuti disederhanakan)
-                    ps.setInt(1, rs.getInt("id_dokter"));
-                    ps.setString(2, rs.getString("hari"));
-                    ps.setTime(3, rs.getTime("jam_mulai"));
-                    ps.setTime(4, rs.getTime("jam_selesai"));
-                    ps.setDate(5, java.sql.Date.valueOf(target));
-                    ps.executeUpdate();
+                    LocalDate targetDate = today.plusDays(i);
+                    String hariTarget = getNamaHariIndo(targetDate.getDayOfWeek());
+
+                    // CEK 1: Apakah Hari Tanggal INI sama dengan Hari Template?
+                    // (Misal: Apakah tgl 05-Des-2025 adalah "Senin"?)
+                    if (hariTarget.equalsIgnoreCase(hariTemplate)) {
+
+                        // CEK 2: Apakah Dokter Cuti pada tanggal ini?
+                        if (!isDokterCuti(conn, idDokter, java.sql.Date.valueOf(targetDate))) {
+
+                            // Jika cocok dan tidak cuti -> INSERT
+                            ps.setInt(1, idDokter);
+                            ps.setString(2, hariTarget); // Masukkan "Senin", "Selasa", dll
+                            ps.setTime(3, jamMulai);
+                            ps.setTime(4, jamSelesai);
+                            ps.setDate(5, java.sql.Date.valueOf(targetDate));
+                            ps.executeUpdate();
+                        }
+                    }
                 }
             }
             conn.commit();
         } catch (Exception e) {
             try { if(conn!=null) conn.rollback(); } catch(SQLException ex){}
+            e.printStackTrace();
         }
+    }
+
+    // Helper Cek Cuti
+    private boolean isDokterCuti(Connection conn, int idDokter, Date tanggal) {
+        String sql = "SELECT COUNT(*) FROM cuti WHERE id_dokter = ? AND ? BETWEEN tgl_mulai AND tgl_selesai";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idDokter);
+            ps.setDate(2, tanggal);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Return true jika ada data cuti
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return false;
     }
 }
