@@ -6,19 +6,20 @@ import java.sql.*;
 
 public class AkunPenggunaDAO {
 
-    // 1. Login KHUSUS Admin & Dokter (Wajib Password)
-    public AkunPengguna authenticateAdminDokter(String noHp, String password, String role) {
-        String sql = "SELECT * FROM akun_pengguna WHERE no_hp = ? AND password = ? AND role = ?";
+    // 1. Login Admin/Dokter (Cari berdasarkan USERNAME)
+    public AkunPengguna authenticateAdminDokter(String usernameInput, String password, String role) {
+        String sql = "SELECT * FROM akun_pengguna WHERE username = ? AND password = ? AND role = ?";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, noHp);
+            ps.setString(1, usernameInput);
             ps.setString(2, password);
             ps.setString(3, role);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new AkunPengguna(
                         rs.getString("id_akun_pengguna"),
-                        rs.getString("no_hp"),
+                        rs.getString("username"), // Ambil data username
+                        rs.getString("no_hp"),    // Ini bakal null, tapi gpp
                         rs.getString("nama")
                 );
             }
@@ -26,18 +27,18 @@ public class AkunPenggunaDAO {
         return null;
     }
 
-    // 2. Cek User (Pasien) berdasarkan No HP saja (Tanpa Password)
-    // Digunakan untuk mengecek apakah nomor ini sudah pernah berobat/daftar sebelumnya
-    public AkunPengguna cekUserByNoHP(String noHp) {
+    // 2. Cek User/Pasien (Cari berdasarkan NO_HP)
+    public AkunPengguna cekUserByNoHP(String noHpInput) {
         String sql = "SELECT * FROM akun_pengguna WHERE no_hp = ? AND role = 'USER'";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, noHp);
+            ps.setString(1, noHpInput);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return new AkunPengguna(
                         rs.getString("id_akun_pengguna"),
-                        rs.getString("no_hp"),
+                        rs.getString("username"), // Ini bakal null
+                        rs.getString("no_hp"),    // Ambil data no_hp
                         rs.getString("nama")
                 );
             }
@@ -45,13 +46,13 @@ public class AkunPenggunaDAO {
         return null;
     }
 
-    // 3. Register User Baru (Jika No HP belum ada)
-    // Default password diisi '123' karena user login via No HP, tapi database kolom password not null
-    public boolean registerUser(String noHp, String nama) {
+    // 3. Register User Baru (Simpan ke kolom NO_HP)
+    public boolean registerUser(String noHpInput, String nama) {
+        // Kolom username dikosongkan (NULL) untuk user biasa
         String sql = "INSERT INTO akun_pengguna (no_hp, nama, password, role) VALUES (?, ?, '123', 'USER')";
         try (Connection conn = DBConnect.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, noHp);
+            ps.setString(1, noHpInput);
             ps.setString(2, nama);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {

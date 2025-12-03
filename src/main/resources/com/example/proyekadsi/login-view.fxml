@@ -28,5 +28,5 @@
 
     <TextField fx:id="namaRegisterField" promptText="Nama Lengkap (Khusus Pendaftar Baru)" maxWidth="300.0" visible="false" managed="false"/>
 
-    <Button text="Masuk" onAction="#onLoginClick" prefWidth="300.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+    <Button text="Masuk" onAction="#onLoginClick" prefWidth="300.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-cursor: hand;"/>
 </VBox>

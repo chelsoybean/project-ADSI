@@ -40,7 +40,6 @@
                 <Label text="--------------------------------------------------"/>
 
                 <Label text="Generate Jadwal Praktek (2 Minggu)" style="-fx-font-weight: bold;"/>
-                <Label text="Klik tombol ini setiap akhir minggu untuk membuka jadwal baru. Sistem otomatis melewati tanggal cuti." wrapText="true"/>
                 <Button text="GENERATE JADWAL SEKARANG" onAction="#onGenerateJadwal" prefHeight="40.0" style="-fx-background-color: #2196F3; -fx-text-fill: white;"/>
             </VBox>
         </Tab>
